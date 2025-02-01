@@ -1,0 +1,108 @@
+import { Component, OnInit } from '@angular/core';
+import { LoanService } from '../services/loan.service'; // Import your loan service
+
+@Component({
+  selector: 'app-view-loan',
+  templateUrl: './view-loan.component.html',
+  styleUrls: ['./view-loan.component.css']
+})
+export class ViewLoanComponent implements OnInit {
+  loans: any[] = []; // Array to hold loan data
+
+  constructor(private loanService: LoanService) {} // Inject the loan service
+
+  ngOnInit(): void {
+    this.fetchLoans(); // Fetch loan data on component initialization
+  }
+
+  fetchLoans(): void {
+    this.loanService.getLoans().subscribe(
+      (data) => {
+        this.loans = data; // Assign fetched data to the loans array
+      },
+      (error) => {
+        console.error('Error fetching loans:', error);
+      }
+    );
+  }
+
+  editLoan(loan: any): void {
+    console.log('Editing loan:', loan);
+    // Navigate to the edit loan component or perform edit action
+  }
+
+  deleteLoan(loan: any): void {
+    console.log('Deleting loan:', loan);
+    // Perform delete action (e.g., call a service method to delete the loan)
+  }
+}
+
+<div class="container mt-4">
+  <h2>Loan Details</h2>
+  <table class="table table-bordered table-striped">
+    <thead class="thead-dark">
+      <tr>
+        <th>No</th>
+        <th>Loan Type</th>
+        <th>Maximum Amount</th>
+        <th>Interest Rate</th>
+        <th>Repayment Tenure</th>
+        <th>Eligibility Criteria</th>
+        <th>Documents Required</th>
+        <th>Description</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let loan of loans">
+        <td>{{ loan.no }}</td>
+        <td>{{ loan.loanType }}</td>
+        <td>{{ loan.maxAmount }}</td>
+        <td>{{ loan.interestRate }}</td>
+        <td>{{ loan.repaymentTenure }}</td>
+        <td>{{ loan.eligibility }}</td>
+        <td>{{ loan.documents }}</td>
+        <td>{{ loan.description }}</td>
+        <td>
+          <button class="btn btn-primary btn-sm mr-2" (click)="editLoan(loan)">Edit</button>
+          <button class="btn btn-danger btn-sm" (click)="deleteLoan(loan)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+/* Add custom styles here if required */
+table {
+  width: 100%;
+  margin-top: 20px;
+}
+
+th, td {
+  padding: 12px;
+  text-align: left;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+  border-color: #004085;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  border-color: #dc3545;
+}
+
+.btn-danger:hover {
+  background-color: #c82333;
+  border-color: #bd2130;
+}
+
+.mr-2 {
+  margin-right: 8px; /* Add spacing between buttons */
+}
