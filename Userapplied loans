@@ -1,0 +1,115 @@
+<div class="container mt-4">
+  <div class="card shadow">
+    <div class="card-header bg-primary text-white">
+      <h3 class="mb-0">Applied Loans</h3>
+    </div>
+    
+    <div class="card-body">
+      <!-- Search Input -->
+      <div class="row mb-4">
+        <div class="col-md-6">
+          <div class="input-group">
+            <input type="text" 
+                   class="form-control" 
+                   placeholder="Search by Loan Name..."
+                   id="loanSearch"
+                   (input)="filterLoans($event.target.value)">
+            <div class="input-group-append">
+              <span class="input-group-text">
+                <i class="fas fa-search"></i>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Loans Table -->
+      <div class="table-responsive">
+        <table class="table table-hover table-bordered">
+          <thead class="thead-light">
+            <tr>
+              <th>#</th>
+              <th>Loan Name</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th>Date Applied</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let loan of filteredLoans; let i = index">
+              <td>{{ i + 1 }}</td>
+              <td>{{ loan.name }}</td>
+              <td>{{ loan.amount | currency }}</td>
+              <td>
+                <span class="badge" 
+                      [ngClass]="{
+                        'badge-success': loan.status === 'Approved',
+                        'badge-warning': loan.status === 'Pending',
+                        'badge-danger': loan.status === 'Rejected'
+                      }">
+                  {{ loan.status }}
+                </span>
+              </td>
+              <td>{{ loan.appliedDate | date }}</td>
+              <td>
+                <button class="btn btn-sm btn-outline-primary mr-2">
+                  <i class="fas fa-eye"></i> View
+                </button>
+                <button class="btn btn-sm btn-outline-danger" 
+                        (click)="cancelLoan(loan.id)">
+                  <i class="fas fa-times"></i> Cancel
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="filteredLoans.length === 0">
+              <td colspan="6" class="text-center text-muted">
+                No applied loans found
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+export class AppliedLoansComponent {
+  loans = [
+    {
+      id: 1,
+      name: 'Home Improvement Loan',
+      amount: 50000,
+      status: 'Pending',
+      appliedDate: new Date('2024-03-01')
+    },
+    {
+      id: 2,
+      name: 'Education Loan',
+      amount: 100000,
+      status: 'Approved',
+      appliedDate: new Date('2024-02-15')
+    }
+  ];
+
+  filteredLoans = [...this.loans];
+
+  filterLoans(searchTerm: string) {
+    if (!searchTerm) {
+      this.filteredLoans = [...this.loans];
+      return;
+    }
+    
+    const term = searchTerm.toLowerCase();
+    this.filteredLoans = this.loans.filter(loan => 
+      loan.name.toLowerCase().includes(term)
+    );
+  }
+
+  cancelLoan(loanId: number) {
+    // Add cancellation logic here
+    this.filteredLoans = this.filteredLoans.filter(
+      loan => loan.id !== loanId
+    );
+  }
+}
