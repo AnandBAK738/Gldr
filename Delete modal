@@ -1,0 +1,182 @@
+<div class="container mt-4">
+  <h2>Loan Details</h2>
+  <input type="text" class="form-control" #label (input)="filter(label.value)" placeholder="Search....."><br>
+  <table class="table table-bordered table-striped">
+    <thead class="thead-dark">
+      <tr>
+        <th>S.No</th>
+        <th>Loan Type</th>
+        <th>Maximum Amount</th>
+        <th>Interest Rate</th>
+        <th>Repayment Tenure</th>
+        <th>Eligibility Criteria</th>
+        <th>Documents Required</th>
+        <th>Description</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let loan of loans; index as i">
+        <td>{{ i + 1 }}</td>
+        <td>{{ loan.loanType }}</td>
+        <td>{{ loan.maximumAmount }}</td>
+        <td>{{ loan.interestRate }}</td>
+        <td>{{ loan.repaymentTenure }}</td>
+        <td>{{ loan.eligibility }}</td>
+        <td>{{ loan.documentsRequired }}</td>
+        <td>{{ loan.description }}</td>
+        <td>
+          <button class="btn btn-primary btn-sm mr-2" (click)="editLoan(loan.loanId)">Edit</button>
+          <button class="btn btn-danger btn-sm" (click)="openDeleteModal(loan.loanId)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Confirmation Modal -->
+<div *ngIf="showDeleteModal" class="modal fade show" style="display: block; background-color: rgba(0, 0, 0, 0.5);">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirm Delete</h5>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete this loan?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeDeleteModal()">Cancel</button>
+        <button type="button" class="btn btn-danger" (click)="confirmDelete()">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-loan',
+  templateUrl: './loan.component.html',
+  styleUrls: ['./loan.component.css'],
+})
+export class LoanComponent {
+  loans = [
+    // Sample data
+    {
+      loanId: 1,
+      loanType: 'Personal Loan',
+      maximumAmount: 500000,
+      interestRate: '10%',
+      repaymentTenure: '5 years',
+      eligibility: 'Salary > 25000',
+      documentsRequired: 'Aadhar, PAN, Salary Slip',
+      description: 'Loan for personal use',
+    },
+    // Add more loan objects here
+  ];
+
+  showDeleteModal = false;
+  loanIdToDelete: number | null = null;
+
+  // Open the delete confirmation modal
+  openDeleteModal(loanId: number): void {
+    this.loanIdToDelete = loanId;
+    this.showDeleteModal = true;
+  }
+
+  // Close the delete confirmation modal
+  closeDeleteModal(): void {
+    this.showDeleteModal = false;
+    this.loanIdToDelete = null;
+  }
+
+  // Confirm delete action
+  confirmDelete(): void {
+    if (this.loanIdToDelete !== null) {
+      this.loans = this.loans.filter((loan) => loan.loanId !== this.loanIdToDelete);
+    }
+    this.closeDeleteModal();
+  }
+
+  // Edit loan (placeholder function)
+  editLoan(loanId: number): void {
+    console.log('Edit loan with ID:', loanId);
+  }
+
+  // Filter loans (placeholder function)
+  filter(searchTerm: string): void {
+    console.log('Filter loans by:', searchTerm);
+  }
+}
+
+/* Modal Styling */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-dialog {
+  background-color: white;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 400px;
+}
+
+.modal-content {
+  padding: 20px;
+}
+
+.modal-header {
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+}
+
+.modal-title {
+  margin: 0;
+  font-size: 18px;
+}
+
+.modal-body {
+  margin-bottom: 20px;
+}
+
+.modal-footer {
+  border-top: 1px solid #ddd;
+  padding-top: 10px;
+  text-align: right;
+}
+
+.btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  color: white;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
+}
+
+.btn-danger:hover {
+  background-color: #c82333;
+}
